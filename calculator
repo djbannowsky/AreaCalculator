@@ -1,0 +1,205 @@
+import math
+import tkinter as tk
+from tkinter import ttk
+
+LARGE_FONT = ("Verdana", 12)
+
+
+class Calculator(tk.Tk):
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+
+        tk.Tk.iconbitmap(self, default="clienticon.ico")
+        tk.Tk.wm_title(self, "Area Calculator")
+
+        container = tk.Frame(self)
+        container.pack(side="top", fill="both", expand=True)
+        container.grid_rowconfigure(0, weight=1)
+        container.grid_columnconfigure(0, weight=1, uniform="x")
+
+        self.frames = {}
+
+        for F in (StartPage, Circle, Square, Triangle, Parallelogram):
+            frame = F(container, self)
+
+            self.frames[F] = frame
+
+            frame.grid(row=0, column=0, sticky="nsew")
+
+        self.show_frame(StartPage)
+
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
+
+
+class StartPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Please select a shape.", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+
+        button1 = ttk.Button(self, text="Circle", command=lambda: controller.show_frame(Circle))
+        button1.pack()
+
+        button2 = ttk.Button(self, text="Square", command=lambda: controller.show_frame(Square))
+        button2.pack()
+
+        button3 = ttk.Button(self, text="Triangle", command=lambda: controller.show_frame(Triangle))
+        button3.pack()
+
+        button4 = ttk.Button(self, text="Parallelogram", command=lambda: controller.show_frame(Parallelogram))
+        button4.pack()
+
+
+class Circle(tk.Frame):
+    def __init__(self, parent, controller):
+        global radius
+        radius = tk.StringVar()
+        tk.Frame.__init__(self, parent)
+
+        label = tk.Label(self, text="Circle", font='Arial 24')
+        label.grid(row=0, column=0, sticky='w', padx=10)
+
+        solve_for = tk.Label(self, text="Solve for area", font='Arial 13')
+        solve_for.grid(row=1, column=0, sticky='w', padx=10)
+
+        global side
+        side = ttk.Entry(self)
+        side.grid(row=3, column=1)
+        side.bind(sequence='<KeyRelease>', func=Circle.circle_area)
+
+        area = tk.Label(self, font='Arial 20', textvariable=radius)
+        area.grid(row=2, column=1, sticky='w', pady=10, padx=10)
+
+        letter_a = tk.Label(self, font='Arial 27', text="A    = ")
+        letter_a.grid(row=2, column=0, sticky='w', pady=25, padx=10)
+
+        variable = tk.Label(self, font='Arial 13', text="radius")
+        variable.grid(row=3, column=0, pady=25, padx=10, sticky='w')
+
+        button1 = ttk.Button(self, text="Back to home page", command=lambda: controller.show_frame(StartPage))
+        button1.grid(row=3, column=2, padx=50)
+
+    def circle_area(self):
+        radius.set(round(float(side.get()) ** 2 * math.pi, 3))
+
+
+class Square(tk.Frame):
+    def __init__(self, parent, controller):
+        global length
+        length = tk.StringVar()
+        tk.Frame.__init__(self, parent)
+
+        label = tk.Label(self, text="Square", font='Arial 24')
+        label.grid(row=0, column=0, sticky='w', padx=10)
+
+        solve_for = tk.Label(self, text="Solve for area", font='Arial 13')
+        solve_for.grid(row=1, column=0, sticky='w', padx=10)
+
+        global entry1
+        entry1 = ttk.Entry(self)
+        entry1.grid(row=3, column=1)
+        entry1.bind(sequence='<KeyRelease>', func=Square.square_area)
+
+        area = tk.Label(self, font='Arial 20', textvariable=length)
+        area.grid(row=2, column=1, sticky='w', pady=10, padx=10)
+
+        letter_a = tk.Label(self, font='Arial 27', text="A    = ")
+        letter_a.grid(row=2, column=0, sticky='w', pady=25, padx=10)
+
+        variable = tk.Label(self, font='Arial 13', text="length")
+        variable.grid(row=3, column=0, pady=25, padx=10, sticky='w')
+
+        button1 = ttk.Button(self, text="Back to home page", command=lambda: controller.show_frame(StartPage))
+        button1.grid(row=3, column=2, padx=50)
+
+    def square_area(self):
+        length.set(round(float(entry1.get()) ** 2, 2))
+
+
+class Triangle(tk.Frame):
+    def __init__(self, parent, controller):
+        global triangle_area
+        triangle_area = tk.StringVar()
+        tk.Frame.__init__(self, parent)
+
+        label = tk.Label(self, text="Triangle", font='Arial 24')
+        label.grid(row=0, column=0, sticky='w', padx=10)
+
+        solve_for = tk.Label(self, text="Solve for area", font='Arial 13')
+        solve_for.grid(row=1, column=0, sticky='w', padx=10)
+
+        global tri_height
+        tri_height = ttk.Entry(self)
+        tri_height.grid(row=3, column=1)
+        tri_height.bind(sequence='<KeyRelease>', func=Triangle.triangle_area)
+
+        global tri_base
+        tri_base = ttk.Entry(self)
+        tri_base.grid(row=4, column=1)
+        tri_base.bind(sequence='<KeyRelease>', func=Triangle.triangle_area)
+
+        area = tk.Label(self, font='Arial 20', textvariable=triangle_area)
+        area.grid(row=2, column=1, sticky='w', pady=10, padx=10)
+
+        letter_a = tk.Label(self, font='Arial 27', text="A    = ")
+        letter_a.grid(row=2, column=0, sticky='w', pady=25, padx=10)
+
+        variable1 = tk.Label(self, font='Arial 13', text="base")
+        variable1.grid(row=3, column=0, pady=25, padx=10, sticky='w')
+
+        variable2 = tk.Label(self, font='Arial 13', text="height")
+        variable2.grid(row=4, column=0, pady=10, padx=10, sticky='w')
+
+        button1 = ttk.Button(self, text="Back to home page", command=lambda: controller.show_frame(StartPage))
+        button1.grid(row=4, column=2, padx=50)
+
+    def triangle_area(self):
+        triangle_area.set(round(float(tri_base.get()) * float(tri_height.get()) / 2, 2))
+
+
+class Parallelogram(tk.Frame):
+    def __init__(self, parent, controller):
+        global parallelogram_area
+        parallelogram_area = tk.StringVar()
+        tk.Frame.__init__(self, parent)
+
+        label = tk.Label(self, text="Parallelogram", font='Arial 24')
+        label.grid(row=0, column=0, sticky='w', padx=10)
+
+        solve_for = tk.Label(self, text="Solve for area", font='Arial 13')
+        solve_for.grid(row=1, column=0, sticky='w', padx=10)
+
+        global parallelogram_base
+        parallelogram_base = ttk.Entry(self)
+        parallelogram_base.grid(row=3, column=1)
+        parallelogram_base.bind(sequence='<KeyRelease>', func=Parallelogram.parallelogram_area)
+
+        global parallelogram_height
+        parallelogram_height = ttk.Entry(self)
+        parallelogram_height.grid(row=4, column=1)
+        parallelogram_height.bind(sequence='<KeyRelease>', func=Parallelogram.parallelogram_area)
+
+        area = tk.Label(self, font='Arial 20', textvariable=parallelogram_area)
+        area.grid(row=2, column=1, sticky='w', pady=10, padx=10)
+
+        letter_a = tk.Label(self, font='Arial 27', text="A    = ")
+        letter_a.grid(row=2, column=0, sticky='w', pady=25, padx=10)
+
+        variable1 = tk.Label(self, font='Arial 13', text="base")
+        variable1.grid(row=3, column=0, pady=25, padx=10, sticky='w')
+
+        variable2 = tk.Label(self, font='Arial 13', text="height")
+        variable2.grid(row=4, column=0, pady=10, padx=10, sticky='w')
+
+        button1 = ttk.Button(self, text="Back to home page", command=lambda: controller.show_frame(StartPage))
+        button1.grid(row=4, column=2, padx=50)
+
+    def parallelogram_area(self):
+        parallelogram_area.set(round(float(parallelogram_height.get()) * float(parallelogram_base.get()), 2))
+
+
+app = Calculator()
+app.geometry("550x300")
+app.mainloop()
